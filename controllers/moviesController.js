@@ -1,3 +1,6 @@
+import connection from "../data/db.js";
+
+
 const index = (req, res) => {
   res.send('Elenco film')
 };
