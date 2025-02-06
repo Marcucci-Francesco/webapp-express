@@ -8,9 +8,12 @@ const port = process.env.PORT || 3000;
 import movies from './routers/movies.js';
 import errorHandler from './middlewares/errorsHandler.js';
 import notFound from './middlewares/notFound.js';
+import imagePath from './middlewares/imagePath.js';
 
 app.use(express.json());
 app.get(express.static('public'));
+
+app.use(imagePath);
 
 
 app.get('/', (req, res) => {

@@ -6,7 +6,14 @@ const index = (req, res) => {
 
   connection.query(sql, (err, results) => {
     if (err) return res.status(500).json({ error: err.message })
-    res.json(results)
+
+    const movies = results.map(movie => {
+      return {
+        ...movie,
+        image: req.imagePath + movie.image
+      }
+    })
+    res.json(movies)
   })
 };
 
