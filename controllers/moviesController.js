@@ -38,6 +38,7 @@ const show = (req, res) => {
       if (resultsReview.length === 0) return res.status(404).json({ error: 'Recensione non trovata' })
 
       movie.reviews = resultsReview;
+      movie.image = req.imagePath + movie.image;
       res.json(movie)
 
     })
