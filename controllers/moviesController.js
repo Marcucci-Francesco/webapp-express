@@ -52,14 +52,16 @@ const show = (req, res) => {
 
 const store = (req, res) => {
   const id = req.params.id
+  const { name, vote, text } = req.body;
+  console.log(req.body);
+
 
   const sql = `INSERT INTO reviews (name, vote, text, movie_id) VALUES (?, ?, ?, ?)`;
 
   connection.query(sql, [name, vote, text, id], (err, results) => {
     if (err) return res.status(500).json({ error: err.message })
-    res.status(201)
 
-    res.json({ message: 'Review added', id: results.insertId })
+    res.status(201).json({ message: 'Review added', id: results.insertId })
   })
 }
 
