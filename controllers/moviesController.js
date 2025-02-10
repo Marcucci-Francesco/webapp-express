@@ -20,7 +20,10 @@ const index = (req, res) => {
 const show = (req, res) => {
   const id = req.params.id
 
-  const sql = ` SELECT * FROM movies WHERE id = ?`;
+  const sql = ` SELECT M.*, ROUND(AVG(R.vote)) AS average_vote
+  FROM movies M
+  LEFT JOIN reviews R ON M.id = R.movie_id
+  WHERE M.id = ?`;
 
   const sqlReviews = `SELECT R.*
   FROM reviews R
