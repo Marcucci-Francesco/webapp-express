@@ -65,8 +65,27 @@ const store = (req, res) => {
   })
 }
 
+const storeNewMovie = (req, res) => {
+  console.log(req);
+  const { title, director, genre, release_year, abstract } = req.body;
+
+  const imageName = req.file.filename;
+
+  const sql = 'INSERT INTO movies (title, director, genre, release_year, abstract, image) VALUES (?, ?, ?, ?, ?, ?)'
+
+  connection.query(
+    sql,
+    [title, director, genre, release_year, abstract, imageName],
+    (err, results) => {
+      if (err) return res.status(500).json({ error: err.message })
+      res.status(201).json({ status: 'success', message: 'Movie added' })
+    }
+  )
+}
+
 export {
   index,
   show,
-  store
+  store,
+  storeNewMovie
 }
