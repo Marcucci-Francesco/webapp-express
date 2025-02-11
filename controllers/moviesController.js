@@ -66,7 +66,7 @@ const store = (req, res) => {
 }
 
 const storeNewMovie = (req, res) => {
-  console.log(req);
+  console.log(req.file);
   const { title, director, genre, release_year, abstract } = req.body;
 
   const imageName = req.file.filename;
