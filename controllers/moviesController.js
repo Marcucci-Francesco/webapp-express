@@ -1,4 +1,5 @@
 import connection from "../data/db.js";
+import path from "path";
 
 
 const index = (req, res) => {
@@ -38,15 +39,10 @@ const show = (req, res) => {
 
     connection.query(sqlReviews, [id], (err, resultsReview) => {
       if (err) return res.status(500).json({ error: err.message })
-      if (resultsReview.length === 0) return res.status(404).json({ error: 'Recensione non trovata' })
-
       movie.reviews = resultsReview.length > 0 ? resultsReview : [];
       movie.image = req.imagePath + movie.image;
       res.json(movie)
-
     })
-
-
   })
 };
 
@@ -82,9 +78,31 @@ const storeNewMovie = (req, res) => {
   )
 }
 
+const destroy = (req, res) => {
+  const id = req.params.id;
+
+  const sqlImage = `SELECT image FROM movies WHERE id = ?`
+
+  connection.query(sqlImage, [id], (err, results) => {
+    const imageName = results[0].image;
+
+    const imagePath = path.join(__dirname, '../public/img', imageName);
+
+    fs.unlink(imagePath, cb());
+  })
+
+  const sqlDelete = `DELETE FROM movies WHERE id = ?`
+
+  connection.query(sqlDelete, [id], (err, results) => {
+    if (err) return res.status(500).json({ error: err.message })
+    res.json({ message: 'Film eliminato con successo' })
+  })
+}
+
 export {
   index,
   show,
   store,
-  storeNewMovie
+  storeNewMovie,
+  destroy
 }
