@@ -1,5 +1,7 @@
 import connection from "../data/db.js";
 import path from "path";
+import fs from "fs";
+import { fileURLToPath } from 'url';
 
 
 const index = (req, res) => {
@@ -80,26 +82,29 @@ const storeNewMovie = (req, res) => {
 
 const destroy = (req, res) => {
   const id = req.params.id;
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
 
-  const sqlImage = `SELECT image FROM movies WHERE id = ?`
+  const sqlImage = `SELECT image FROM movies WHERE id = ?`;
+  const sqlDelete = `DELETE FROM movies WHERE id = ?`
 
   connection.query(sqlImage, [id], (err, results) => {
-    if (err) return res.status(500).json({ error: err.message })
     const imageName = results[0].image;
+
     const imagePath = path.join(__dirname, '../public/img', imageName);
-    res.json({ message: imagePath })
 
     fs.unlink(imagePath, (err) => {
       if (err) return res.status(500).json({ error: err.message })
     });
+
+
+    connection.query(sqlDelete, [id], (err, results) => {
+      if (err) return res.status(500).json({ error: err.message })
+      res.json({ message: 'Film eliminato con successo' })
+    })
+
   })
 
-  const sqlDelete = `DELETE FROM movies WHERE id = ?`
-
-  connection.query(sqlDelete, [id], (err, results) => {
-    if (err) return res.status(500).json({ error: err.message })
-    res.json({ message: 'Film eliminato con successo' })
-  })
 }
 
 export {
