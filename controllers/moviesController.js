@@ -84,11 +84,14 @@ const destroy = (req, res) => {
   const sqlImage = `SELECT image FROM movies WHERE id = ?`
 
   connection.query(sqlImage, [id], (err, results) => {
+    if (err) return res.status(500).json({ error: err.message })
     const imageName = results[0].image;
-
     const imagePath = path.join(__dirname, '../public/img', imageName);
+    res.json({ message: imagePath })
 
-    fs.unlink(imagePath, cb());
+    fs.unlink(imagePath, (err) => {
+      if (err) return res.status(500).json({ error: err.message })
+    });
   })
 
   const sqlDelete = `DELETE FROM movies WHERE id = ?`
